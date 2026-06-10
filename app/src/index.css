@@ -1,0 +1,53 @@
+@import url('https://rsms.me/inter/inter.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #fafafa;
+  color: #0a0a0a;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* React Flow overrides for minimal style */
+.react-flow__node {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.react-flow__edge-path {
+  stroke: #c9c9c9;
+  stroke-width: 1.25;
+}
+
+.react-flow__controls {
+  box-shadow: none !important;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+.react-flow__controls-button {
+  border: none !important;
+  background: white !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+.react-flow__controls-button:last-child {
+  border-bottom: none !important;
+}
+
+.react-flow__attribution {
+  display: none;
+}

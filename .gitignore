@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+.vscode/
+.idea/
+.env
+.env.local
+
+# Claude Code internal config — not useful for other developers
+app/.claude/
+.claude/
