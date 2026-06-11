@@ -34,7 +34,7 @@ export function useApp(): AppState {
 }
 
 // Returns ids of all nodes that have children except the root(s) — used as the
-// initial collapsed set so the chart starts with VD + 1 level expanded.
+// initial collapsed set so the chart starts with the CEO + 1 level expanded.
 export function initialCollapsed<T extends { id: string; manager_id: string | null }>(items: T[]): string[] {
   const hasChildren = new Set<string>();
   for (const it of items) {

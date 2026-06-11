@@ -22,8 +22,8 @@ export function downloadSampleExcel(): void {
   const employees = generateSampleEmployees();
   const ws = XLSX.utils.json_to_sheet(employees, { header: [...EXPECTED_COLUMNS] });
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Personalfil');
-  XLSX.writeFile(wb, 'personalfil-mall.xlsx');
+  XLSX.utils.book_append_sheet(wb, ws, 'Employees');
+  XLSX.writeFile(wb, 'employee-file-sample.xlsx');
 }
 
 export function downloadEmptyTemplate(): void {
@@ -31,10 +31,10 @@ export function downloadEmptyTemplate(): void {
     [
       {
         employee_id: 'E001',
-        name: 'Exempel Namn',
-        title: 'VD',
+        name: 'Example Name',
+        title: 'CEO',
         manager_id: '',
-        department: 'Ledning',
+        department: 'Leadership',
         location: 'Stockholm',
         hire_date: '2020-01-15',
         salary: 200000,
@@ -47,14 +47,14 @@ export function downloadEmptyTemplate(): void {
     { header: [...EXPECTED_COLUMNS] },
   );
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Personalfil');
-  XLSX.writeFile(wb, 'personalfil-tom-mall.xlsx');
+  XLSX.utils.book_append_sheet(wb, ws, 'Employees');
+  XLSX.writeFile(wb, 'employee-file-template.xlsx');
 }
 
 // Reads the first sheet without interpreting columns — used by the mapping
 // step so any HRIS export can be mapped onto the Employee shape.
 export async function readRawSheet(file: File): Promise<RawSheet> {
-  // CSV: läs som text så UTF-8 (å/ä/ö) tolkas rätt — SheetJS antar annars Latin-1
+  // CSV: read as text so UTF-8 (å/ä/ö) decodes correctly — SheetJS otherwise assumes Latin-1
   const isCsv = /\.csv$/i.test(file.name) || file.type === 'text/csv';
   const wb = isCsv
     ? XLSX.read(await file.text(), { type: 'string', cellDates: true })
@@ -107,11 +107,11 @@ function normalizeRow(r: Record<string, unknown>, idx: number): Employee {
   const gender = str('gender').toUpperCase();
   return {
     employee_id: str('employee_id') || `E${String(idx + 1).padStart(3, '0')}`,
-    name: str('name', 'Okänd'),
-    title: str('title', 'Roll'),
+    name: str('name', 'Unknown'),
+    title: str('title', 'Role'),
     manager_id: mgr === '' || mgr.toLowerCase() === 'null' ? null : mgr,
-    department: str('department', 'Övrigt'),
-    location: str('location', 'Okänd'),
+    department: str('department', 'Other'),
+    location: str('location', 'Unknown'),
     hire_date: str('hire_date'),
     salary: num('salary'),
     fte: num('fte', 1),

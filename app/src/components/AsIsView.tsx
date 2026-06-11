@@ -19,7 +19,7 @@ function SignalChip({ severity }: { severity: 'info' | 'warn' | 'risk' }) {
     warn: 'bg-amber-100 text-amber-800',
     risk: 'bg-red-100 text-red-800',
   };
-  const label = { info: 'Info', warn: 'Varning', risk: 'Risk' }[severity];
+  const label = { info: 'Info', warn: 'Warning', risk: 'Risk' }[severity];
   return <span className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded ${map[severity]}`}>{label}</span>;
 }
 
@@ -43,21 +43,21 @@ export function AsIsView() {
       <aside className="w-[380px] shrink-0 overflow-y-auto bg-ink-100">
         <div className="p-5 space-y-5">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-ink-500">Nuläge</div>
-            <div className="text-lg font-medium text-ink-900 mt-1">Översikt</div>
+            <div className="text-[11px] uppercase tracking-wider text-ink-500">As-is</div>
+            <div className="text-lg font-medium text-ink-900 mt-1">Overview</div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <StatTile label="Antal" value={stats.headcount} sub={`${stats.managers} chefer • ${stats.ics} IC`} />
-            <StatTile label="Nivåer" value={stats.maxDepth} />
-            <StatTile label="Span (snitt)" value={stats.avgSpan.toFixed(1)} sub={`max ${stats.maxSpan}`} />
-            <StatTile label="Lönekostnad" value={`${(stats.payroll / 1000).toFixed(0)}k`} sub="kr/månad" />
-            <StatTile label="Snittålder" value={stats.avgAge.toFixed(0)} sub="år" />
-            <StatTile label="Snittanställning" value={stats.avgTenureYears.toFixed(1)} sub="år" />
+            <StatTile label="Headcount" value={stats.headcount} sub={`${stats.managers} managers • ${stats.ics} ICs`} />
+            <StatTile label="Levels" value={stats.maxDepth} />
+            <StatTile label="Span (avg)" value={stats.avgSpan.toFixed(1)} sub={`max ${stats.maxSpan}`} />
+            <StatTile label="Payroll" value={`${(stats.payroll / 1000).toFixed(0)}k`} sub="per month" />
+            <StatTile label="Avg age" value={stats.avgAge.toFixed(0)} sub="yrs" />
+            <StatTile label="Avg tenure" value={stats.avgTenureYears.toFixed(1)} sub="yrs" />
           </div>
 
           <div>
-            <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Avdelningar</div>
+            <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Departments</div>
             <div className="space-y-1">
               {stats.departments.map((d) => (
                 <div key={d.name} className="flex items-center justify-between text-sm">
@@ -69,7 +69,7 @@ export function AsIsView() {
           </div>
 
           <div>
-            <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Orter</div>
+            <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Locations</div>
             <div className="space-y-1">
               {stats.locations.map((d) => (
                 <div key={d.name} className="flex items-center justify-between text-sm">
@@ -81,7 +81,7 @@ export function AsIsView() {
           </div>
 
           <div>
-            <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Könsfördelning</div>
+            <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Gender split</div>
             <div className="flex h-2 rounded overflow-hidden bg-ink-300">
               {(['F', 'M', 'X'] as const).map((g) => {
                 const total = stats.genderSplit.F + stats.genderSplit.M + stats.genderSplit.X;
@@ -92,14 +92,14 @@ export function AsIsView() {
               })}
             </div>
             <div className="mt-1 text-xs text-ink-500">
-              {stats.genderSplit.F} kvinnor • {stats.genderSplit.M} män{stats.genderSplit.X ? ` • ${stats.genderSplit.X} övrigt` : ''}
+              {stats.genderSplit.F} women • {stats.genderSplit.M} men{stats.genderSplit.X ? ` • ${stats.genderSplit.X} other` : ''}
             </div>
           </div>
 
           <div>
-            <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Signaler ({stats.signals.length})</div>
+            <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Signals ({stats.signals.length})</div>
             <div className="space-y-2">
-              {stats.signals.length === 0 && <div className="text-sm text-ink-500">Inga signaler att lyfta.</div>}
+              {stats.signals.length === 0 && <div className="text-sm text-ink-500">No signals to raise.</div>}
               {stats.signals.map((s, i) => (
                 <div key={i} className="rounded-md border border-ink-300 bg-white p-2.5">
                   <div className="flex items-center gap-2">
@@ -129,16 +129,16 @@ export function AsIsView() {
 
           {selectedEmp && (
             <div className="rounded-md border border-ink-900 bg-white p-3">
-              <div className="text-xs uppercase tracking-wider text-ink-500">Vald</div>
+              <div className="text-xs uppercase tracking-wider text-ink-500">Selected</div>
               <div className="mt-1 text-sm font-medium text-ink-900">{selectedEmp.name}</div>
               <div className="text-xs text-ink-500">{selectedEmp.title} • {selectedEmp.department}</div>
               <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-                <div className="text-ink-500">Ort</div><div className="text-ink-700">{selectedEmp.location}</div>
-                <div className="text-ink-500">Nivå</div><div className="text-ink-700">{selectedEmp.level}</div>
+                <div className="text-ink-500">Location</div><div className="text-ink-700">{selectedEmp.location}</div>
+                <div className="text-ink-500">Level</div><div className="text-ink-700">{selectedEmp.level}</div>
                 <div className="text-ink-500">FTE</div><div className="text-ink-700">{selectedEmp.fte}</div>
-                <div className="text-ink-500">Lön</div><div className="text-ink-700">{selectedEmp.salary.toLocaleString('sv-SE')}</div>
-                <div className="text-ink-500">Anställd</div><div className="text-ink-700">{selectedEmp.hire_date}</div>
-                <div className="text-ink-500">Födelseår</div><div className="text-ink-700">{selectedEmp.birth_year}</div>
+                <div className="text-ink-500">Salary</div><div className="text-ink-700">{selectedEmp.salary.toLocaleString('en-US')}</div>
+                <div className="text-ink-500">Hired</div><div className="text-ink-700">{selectedEmp.hire_date}</div>
+                <div className="text-ink-500">Birth year</div><div className="text-ink-700">{selectedEmp.birth_year}</div>
               </div>
             </div>
           )}

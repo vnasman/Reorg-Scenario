@@ -74,18 +74,18 @@ function App() {
           <div className="px-5 py-3 flex items-center gap-6">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-md bg-ink-900" />
-              <div className="text-sm font-medium tracking-tight text-ink-900">Organisationsdesign</div>
+              <div className="text-sm font-medium tracking-tight text-ink-900">Organization Design</div>
             </div>
             <nav className="flex items-center gap-1">
-              <NavLink current={view} target="upload" label="Källdata" onClick={setView} />
-              <NavLink current={view} target="asis" label="Nuläge" onClick={setView} disabled={!hasData} />
+              <NavLink current={view} target="upload" label="Source data" onClick={setView} />
+              <NavLink current={view} target="asis" label="As-is" onClick={setView} disabled={!hasData} />
               <NavLink current={view} target="tobe" label="To-be" onClick={setView} disabled={!hasData} />
-              <NavLink current={view} target="impact" label="Påverkan" onClick={setView} disabled={!hasData} />
+              <NavLink current={view} target="impact" label="Impact" onClick={setView} disabled={!hasData} />
             </nav>
             <div className="flex-1" />
             {hasData && (
               <div className="text-xs text-ink-500">
-                {employees.length} anställda • {scenarios.length} {scenarios.length === 1 ? 'scenario' : 'scenarier'}
+                {employees.length} employees • {scenarios.length} {scenarios.length === 1 ? 'scenario' : 'scenarios'}
               </div>
             )}
           </div>

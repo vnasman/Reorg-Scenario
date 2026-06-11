@@ -85,17 +85,17 @@ export function analyzeAsIs(employees: Employee[]): AsIsStats {
   const signals: Signal[] = [];
 
   for (const s of spansByManager) {
-    if (s.span >= 9) signals.push({ severity: 'warn', title: `Hög span of control: ${s.name}`, detail: `${s.title} har ${s.span} direktrapporter — överväg att dela upp.` });
-    if (s.span === 1) signals.push({ severity: 'info', title: `Enskild rapport: ${s.name}`, detail: `${s.title} har bara 1 direktrapport — möjlig flatning.` });
+    if (s.span >= 9) signals.push({ severity: 'warn', title: `High span of control: ${s.name}`, detail: `${s.title} has ${s.span} direct reports — consider splitting.` });
+    if (s.span === 1) signals.push({ severity: 'info', title: `Single direct report: ${s.name}`, detail: `${s.title} has only 1 direct report — possible flattening.` });
   }
 
-  if (maxDepth >= 5) signals.push({ severity: 'warn', title: 'Djup hierarki', detail: `${maxDepth + 1} nivåer från VD till längst ned — risk för långsamma beslut.` });
+  if (maxDepth >= 5) signals.push({ severity: 'warn', title: 'Deep hierarchy', detail: `${maxDepth + 1} levels from CEO to the bottom — risk of slow decisions.` });
 
   const totalGendered = genderSplit.F + genderSplit.M;
   if (totalGendered > 0) {
     const fShare = genderSplit.F / totalGendered;
     if (fShare < 0.35 || fShare > 0.65) {
-      signals.push({ severity: 'info', title: 'Skev könsfördelning', detail: `${Math.round(fShare * 100)}% kvinnor / ${Math.round((1 - fShare) * 100)}% män — beakta vid roll-tillsättning.` });
+      signals.push({ severity: 'info', title: 'Skewed gender split', detail: `${Math.round(fShare * 100)}% women / ${Math.round((1 - fShare) * 100)}% men — consider when filling roles.` });
     }
   }
 
@@ -160,7 +160,7 @@ export function analyzeScenario(scenario: Scenario, employees: Employee[]): Scen
     .map(([mid, arr]) => {
       const n = byNodeId.get(mid);
       const assigned = n?.assignedEmployeeId ? empById.get(n.assignedEmployeeId) : null;
-      return { manager_id: mid, span: arr.length, name: assigned?.name ?? 'Vakant', title: n?.title ?? '?' };
+      return { manager_id: mid, span: arr.length, name: assigned?.name ?? 'Vacant', title: n?.title ?? '?' };
     })
     .sort((a, b) => b.span - a.span);
 
@@ -200,15 +200,15 @@ export function analyzeScenario(scenario: Scenario, employees: Employee[]): Scen
 
   const signals: Signal[] = [];
   for (const s of spansByManager) {
-    if (s.span >= 9) signals.push({ severity: 'warn', title: `Hög span of control: ${s.name}`, detail: `${s.title} har ${s.span} direktrapporter — överväg att dela upp.` });
-    if (s.span === 1) signals.push({ severity: 'info', title: `Enskild rapport: ${s.name}`, detail: `${s.title} har bara 1 direktrapport — möjlig flatning.` });
+    if (s.span >= 9) signals.push({ severity: 'warn', title: `High span of control: ${s.name}`, detail: `${s.title} has ${s.span} direct reports — consider splitting.` });
+    if (s.span === 1) signals.push({ severity: 'info', title: `Single direct report: ${s.name}`, detail: `${s.title} has only 1 direct report — possible flattening.` });
   }
-  if (maxDepth >= 5) signals.push({ severity: 'warn', title: 'Djup hierarki', detail: `${maxDepth + 1} nivåer från top till lägst — risk för långsamma beslut.` });
+  if (maxDepth >= 5) signals.push({ severity: 'warn', title: 'Deep hierarchy', detail: `${maxDepth + 1} levels from top to bottom — risk of slow decisions.` });
   const totalGendered = genderSplit.F + genderSplit.M;
   if (totalGendered > 0) {
     const fShare = genderSplit.F / totalGendered;
     if (fShare < 0.35 || fShare > 0.65) {
-      signals.push({ severity: 'info', title: 'Skev könsfördelning', detail: `${Math.round(fShare * 100)}% kvinnor / ${Math.round((1 - fShare) * 100)}% män — beakta vid roll-tillsättning.` });
+      signals.push({ severity: 'info', title: 'Skewed gender split', detail: `${Math.round(fShare * 100)}% women / ${Math.round((1 - fShare) * 100)}% men — consider when filling roles.` });
     }
   }
 

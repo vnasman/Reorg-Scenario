@@ -36,18 +36,18 @@ export type RawSheet = {
 };
 
 export const FIELD_META: { field: TargetField; label: string; required: boolean; hint?: string }[] = [
-  { field: 'employee_id', label: 'Anställnings-ID', required: true },
-  { field: 'name', label: 'Namn', required: true },
-  { field: 'manager_id', label: 'Chefens ID', required: true, hint: 'Bygger hierarkin — tom cell = toppnivå' },
-  { field: 'title', label: 'Titel', required: false },
-  { field: 'department', label: 'Avdelning', required: false },
-  { field: 'location', label: 'Ort', required: false },
-  { field: 'hire_date', label: 'Anställningsdatum', required: false },
-  { field: 'salary', label: 'Månadslön', required: false },
-  { field: 'fte', label: 'FTE / Sysselsättningsgrad', required: false, hint: '0–1 eller procent' },
-  { field: 'gender', label: 'Kön', required: false },
-  { field: 'birth_year', label: 'Födelseår', required: false, hint: 'Årtal eller födelsedatum' },
-  { field: 'level', label: 'Nivå', required: false, hint: 'Härleds från hierarkin om den inte mappas' },
+  { field: 'employee_id', label: 'Employee ID', required: true },
+  { field: 'name', label: 'Name', required: true },
+  { field: 'manager_id', label: 'Manager ID', required: true, hint: 'Builds the hierarchy — empty cell = top level' },
+  { field: 'title', label: 'Title', required: false },
+  { field: 'department', label: 'Department', required: false },
+  { field: 'location', label: 'Location', required: false },
+  { field: 'hire_date', label: 'Hire date', required: false },
+  { field: 'salary', label: 'Monthly salary', required: false },
+  { field: 'fte', label: 'FTE / employment rate', required: false, hint: '0–1 or percent' },
+  { field: 'gender', label: 'Gender', required: false },
+  { field: 'birth_year', label: 'Birth year', required: false, hint: 'Year or date of birth' },
+  { field: 'level', label: 'Level', required: false, hint: 'Derived from the hierarchy if not mapped' },
 ];
 
 const SYNONYMS: Record<TargetField, string[]> = {
@@ -148,7 +148,7 @@ function toNumber(v: unknown, fallback: number): number {
 
 function toFte(v: unknown): number {
   const n = toNumber(v, 1);
-  if (n > 1 && n <= 100) return n / 100; // "80" eller "80%" → 0.8
+  if (n > 1 && n <= 100) return n / 100; // "80" or "80%" → 0.8
   if (n <= 0 || n > 1) return 1;
   return n;
 }
@@ -176,12 +176,12 @@ export function applyMapping(sheet: RawSheet, mapping: ColumnMapping): Employee[
   const employees: Employee[] = sheet.rows.map((row, idx) => {
     const mgr = str(row, 'manager_id');
     return {
-      employee_id: str(row, 'employee_id') || `RAD${String(idx + 1).padStart(3, '0')}`,
-      name: str(row, 'name', 'Okänd'),
-      title: str(row, 'title', 'Roll'),
+      employee_id: str(row, 'employee_id') || `ROW${String(idx + 1).padStart(3, '0')}`,
+      name: str(row, 'name', 'Unknown'),
+      title: str(row, 'title', 'Role'),
       manager_id: mgr === '' || mgr.toLowerCase() === 'null' ? null : mgr,
-      department: str(row, 'department', 'Övrigt'),
-      location: str(row, 'location', 'Okänd'),
+      department: str(row, 'department', 'Other'),
+      location: str(row, 'location', 'Unknown'),
       hire_date: toISODate(get(row, 'hire_date')),
       salary: toNumber(get(row, 'salary'), 0),
       fte: mapping.fte ? toFte(get(row, 'fte')) : 1,
@@ -192,7 +192,7 @@ export function applyMapping(sheet: RawSheet, mapping: ColumnMapping): Employee[
   });
 
   // Skip rows that are entirely empty (no id source and no name)
-  const filtered = employees.filter((e) => e.name !== 'Okänd' || !e.employee_id.startsWith('RAD'));
+  const filtered = employees.filter((e) => e.name !== 'Unknown' || !e.employee_id.startsWith('ROW'));
 
   if (!mapping.level) deriveLevels(filtered);
   else for (const e of filtered) if (e.level < 1 || e.level > 6) e.level = 5;

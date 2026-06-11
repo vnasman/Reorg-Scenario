@@ -53,8 +53,8 @@ const PersonNode = memo(({ data }: NodeProps<PersonNodeData>) => {
             data.onToggleCollapse?.(data.id);
           }}
           className={`absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border border-ink-300 text-[10px] leading-none flex items-center justify-center text-ink-700 hover:border-ink-900 hover:text-ink-900 shadow-soft`}
-          title={data.collapsed ? 'Expandera' : 'Minimera'}
-          aria-label={data.collapsed ? 'Expandera' : 'Minimera'}
+          title={data.collapsed ? 'Expand' : 'Collapse'}
+          aria-label={data.collapsed ? 'Expand' : 'Collapse'}
         >
           {data.collapsed ? '+' : '−'}
         </button>
@@ -213,8 +213,8 @@ export function ScenarioOrgChart({
         data: {
           id: l.id,
           primary: n.title,
-          secondary: assigned ? assigned.name : 'Vakant',
-          meta: `${n.department} • Nivå ${n.level}${n.isNewRole ? ' • Ny roll' : ''}`,
+          secondary: assigned ? assigned.name : 'Vacant',
+          meta: `${n.department} • Level ${n.level}${n.isNewRole ? ' • New role' : ''}`,
           variant,
           hasChildren: hasChildren.has(l.id),
           collapsed: collapsedSet.has(l.id),

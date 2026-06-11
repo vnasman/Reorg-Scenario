@@ -18,22 +18,22 @@ export function Upload() {
     try {
       const sheet = await readRawSheet(file);
       if (!sheet.rows.length) {
-        setError('Filen verkar tom.');
+        setError('The file appears to be empty.');
         return;
       }
       if (!sheet.headers.length) {
-        setError('Hittade ingen rubrikrad i filen.');
+        setError('No header row found in the file.');
         return;
       }
       setPending(sheet);
     } catch (e) {
-      setError(`Kunde inte läsa filen: ${(e as Error).message}`);
+      setError(`Could not read the file: ${(e as Error).message}`);
     }
   }
 
   function loadEmployees(emps: Employee[]) {
     setEmployees(emps);
-    const baseScenario = scenarioFromEmployees('Nuläge (kopia)', emps);
+    const baseScenario = scenarioFromEmployees('As-is (copy)', emps);
     resetScenarios([baseScenario]);
     setActiveScenarioId(baseScenario.id);
 
@@ -53,9 +53,9 @@ export function Upload() {
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-3xl mx-auto px-8 py-16">
-        <h1 className="text-3xl font-medium tracking-tight text-ink-900">Organisationsdesign</h1>
+        <h1 className="text-3xl font-medium tracking-tight text-ink-900">Organization Design</h1>
         <p className="mt-3 text-ink-500 leading-relaxed">
-          Ladda upp en personalfil från ditt HRIS för att bygga as-is-schema, designa to-be-varianter och se påverkan på medarbetare.
+          Upload an employee file from your HRIS to build the as-is chart, design to-be variants and see the impact on employees.
         </p>
 
         {pending ? (
@@ -64,7 +64,7 @@ export function Upload() {
             onImport={(emps) => {
               setPending(null);
               if (emps.length === 0) {
-                setError('Inga giltiga rader efter mappning.');
+                setError('No valid rows after mapping.');
                 return;
               }
               loadEmployees(emps);
@@ -84,9 +84,9 @@ export function Upload() {
                   if (f) handleFile(f);
                 }}
               >
-                <div className="text-sm font-medium text-ink-900">Ladda upp Excel</div>
+                <div className="text-sm font-medium text-ink-900">Upload Excel</div>
                 <div className="mt-2 text-sm text-ink-500">
-                  Dra hit eller klicka för att välja .xlsx — kolumnerna mappas i nästa steg, så filen kan komma från vilket HRIS som helst.
+                  Drop a file here or click to pick an .xlsx — columns are mapped in the next step, so the file can come from any HRIS.
                 </div>
                 <input
                   ref={fileRef}
@@ -101,35 +101,35 @@ export function Upload() {
               </div>
 
               <div className="rounded-xl border border-ink-300 bg-white p-6">
-                <div className="text-sm font-medium text-ink-900">Använd exempeldata</div>
-                <div className="mt-2 text-sm text-ink-500">Mid-size Nordisk SaaS, ~50 anställda, 5 nivåer.</div>
+                <div className="text-sm font-medium text-ink-900">Use sample data</div>
+                <div className="mt-2 text-sm text-ink-500">54 Lord of the Rings characters in a mid-size SaaS org, 5 levels.</div>
                 <button
                   onClick={useSampleData}
                   className="mt-4 text-sm rounded-md border border-ink-900 bg-ink-900 text-white px-3 py-1.5 hover:bg-ink-700 transition-colors"
                 >
-                  Ladda exempeldata
+                  Load sample data
                 </button>
               </div>
             </div>
 
             <div className="mt-10 border-t border-ink-300 pt-6">
-              <div className="text-xs uppercase tracking-wider text-ink-500">Mallar</div>
+              <div className="text-xs uppercase tracking-wider text-ink-500">Templates</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <button
                   onClick={downloadEmptyTemplate}
                   className="text-sm rounded-md border border-ink-300 px-3 py-1.5 hover:border-ink-900 transition-colors"
                 >
-                  Ladda ner tom mall
+                  Download empty template
                 </button>
                 <button
                   onClick={downloadSampleExcel}
                   className="text-sm rounded-md border border-ink-300 px-3 py-1.5 hover:border-ink-900 transition-colors"
                 >
-                  Ladda ner exempelfil (med data)
+                  Download sample file (with data)
                 </button>
               </div>
 
-              <div className="mt-6 text-xs uppercase tracking-wider text-ink-500">Mallens kolumner</div>
+              <div className="mt-6 text-xs uppercase tracking-wider text-ink-500">Template columns</div>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {EXPECTED_COLUMNS.map((c) => (
                   <span key={c} className="font-mono text-[11px] bg-ink-100 text-ink-700 px-1.5 py-0.5 rounded">
@@ -138,7 +138,7 @@ export function Upload() {
                 ))}
               </div>
               <div className="mt-2 text-xs text-ink-500">
-                Andra kolumnnamn fungerar också — du mappar dem mot fälten ovan vid uppladdning.
+                Other column names work too — you map them onto the fields above when uploading.
               </div>
             </div>
           </>

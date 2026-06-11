@@ -55,7 +55,7 @@ export function ToBeView() {
     if (!src) return;
     const copy: Scenario = {
       id: crypto.randomUUID(),
-      name: `${src.name} (kopia)`,
+      name: `${src.name} (copy)`,
       nodes: Object.fromEntries(Object.entries(src.nodes).map(([k, v]) => [k, { ...v }])),
     };
     commitScenarios([...scenarios, copy]);
@@ -102,8 +102,8 @@ export function ToBeView() {
     const parent = parentId ? active.nodes[parentId] : null;
     const newNode: RoleNode = {
       id,
-      title: 'Ny roll',
-      department: parent?.department ?? 'Övrigt',
+      title: 'New role',
+      department: parent?.department ?? 'Other',
       level: parent ? Math.min(6, parent.level + 1) : 1,
       manager_id: parentId,
       assignedEmployeeId: null,
@@ -132,9 +132,9 @@ export function ToBeView() {
   if (!active) {
     return (
       <div className="p-8 text-ink-500">
-        Inga scenarier ännu.
+        No scenarios yet.
         <button onClick={addScenario} className="ml-2 underline">
-          Skapa ett från nuläget
+          Create one from as-is
         </button>
       </div>
     );
@@ -158,23 +158,23 @@ export function ToBeView() {
           </button>
         ))}
         <button onClick={addScenario} className="text-sm px-2 py-1 text-ink-500 hover:text-ink-900">
-          + Nytt scenario
+          + New scenario
         </button>
         <div className="flex-1" />
         <button
           onClick={undo}
           disabled={!canUndo}
           className={`text-xs px-2 py-1 ${canUndo ? 'text-ink-700 hover:text-ink-900' : 'text-ink-300 cursor-not-allowed'}`}
-          title="Ångra senaste ändring (⌘Z)"
+          title="Undo last change (⌘Z)"
         >
-          ↶ Ångra
+          ↶ Undo
         </button>
         <button onClick={() => duplicateScenario(active.id)} className="text-xs px-2 py-1 text-ink-500 hover:text-ink-900">
-          Duplicera
+          Duplicate
         </button>
         {scenarios.length > 1 && (
           <button onClick={() => deleteScenario(active.id)} className="text-xs px-2 py-1 text-red-600 hover:text-red-700">
-            Ta bort
+            Delete
           </button>
         )}
         <div className="mx-2 h-4 w-px bg-ink-300" />
@@ -182,13 +182,13 @@ export function ToBeView() {
           onClick={() => setEditMode('chart')}
           className={`text-xs px-2 py-1 rounded ${editMode === 'chart' ? 'bg-ink-100 text-ink-900' : 'text-ink-500'}`}
         >
-          Schema
+          Chart
         </button>
         <button
           onClick={() => setEditMode('table')}
           className={`text-xs px-2 py-1 rounded ${editMode === 'table' ? 'bg-ink-100 text-ink-900' : 'text-ink-500'}`}
         >
-          Tabell
+          Table
         </button>
       </div>
 
@@ -232,13 +232,13 @@ export function ToBeView() {
             />
 
             <div className="rounded-md border border-ink-300 bg-white p-3">
-              <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Snabbåtgärder</div>
+              <div className="text-xs uppercase tracking-wider text-ink-500 mb-2">Quick actions</div>
               <div className="flex flex-col gap-1.5">
                 <button onClick={() => addEmptyRole(null)} className="text-xs text-left text-ink-700 hover:text-ink-900">
-                  + Lägg till tom roll på toppnivå
+                  + Add empty role at top level
                 </button>
                 <button onClick={() => addEmptyRole(selectedNode?.id ?? null)} className="text-xs text-left text-ink-700 hover:text-ink-900" disabled={!selectedNode}>
-                  + Lägg till tom roll under vald
+                  + Add empty role under selected
                 </button>
               </div>
             </div>
@@ -267,7 +267,7 @@ function NodeEditor({
   onAddChild: () => void;
 }) {
   if (!node) {
-    return <div className="rounded-md border border-ink-300 bg-white p-3 text-xs text-ink-500">Välj en nod i schemat eller tabellen för att redigera.</div>;
+    return <div className="rounded-md border border-ink-300 bg-white p-3 text-xs text-ink-500">Select a node in the chart or table to edit.</div>;
   }
   const possibleParents = Object.values(scenario.nodes).filter((n) => n.id !== node.id);
   const empToRole = new Map<string, RoleNode>();
@@ -276,70 +276,70 @@ function NodeEditor({
   }
   return (
     <div className="rounded-md border border-ink-900 bg-white p-3 space-y-3">
-      <div className="text-xs uppercase tracking-wider text-ink-500">Redigera roll</div>
+      <div className="text-xs uppercase tracking-wider text-ink-500">Edit role</div>
 
       <div>
-        <label className="text-[11px] text-ink-500">Titel</label>
+        <label className="text-[11px] text-ink-500">Title</label>
         <input value={node.title} onChange={(e) => onChange({ title: e.target.value })} className="mt-0.5 w-full text-sm border border-ink-300 rounded px-2 py-1" />
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="text-[11px] text-ink-500">Avdelning</label>
+          <label className="text-[11px] text-ink-500">Department</label>
           <input value={node.department} onChange={(e) => onChange({ department: e.target.value })} className="mt-0.5 w-full text-sm border border-ink-300 rounded px-2 py-1" />
         </div>
         <div>
-          <label className="text-[11px] text-ink-500">Nivå</label>
+          <label className="text-[11px] text-ink-500">Level</label>
           <input type="number" min={1} max={6} value={node.level} onChange={(e) => onChange({ level: Number(e.target.value) })} className="mt-0.5 w-full text-sm border border-ink-300 rounded px-2 py-1" />
         </div>
       </div>
 
       <div>
-        <label className="text-[11px] text-ink-500">Rapporterar till</label>
+        <label className="text-[11px] text-ink-500">Reports to</label>
         <select
           value={node.manager_id ?? ''}
           onChange={(e) => onChange({ manager_id: e.target.value || null })}
           className="mt-0.5 w-full text-sm border border-ink-300 rounded px-2 py-1 bg-white"
         >
-          <option value="">— Ingen (toppnivå)</option>
+          <option value="">— None (top level)</option>
           {possibleParents.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.title} {p.assignedEmployeeId ? `(${employees.find((e) => e.employee_id === p.assignedEmployeeId)?.name ?? '?'})` : '(vakant)'}
+              {p.title} {p.assignedEmployeeId ? `(${employees.find((e) => e.employee_id === p.assignedEmployeeId)?.name ?? '?'})` : '(vacant)'}
             </option>
           ))}
         </select>
       </div>
 
       <div>
-        <label className="text-[11px] text-ink-500">Tillsatt av</label>
+        <label className="text-[11px] text-ink-500">Filled by</label>
         <select
           value={node.assignedEmployeeId ?? ''}
           onChange={(e) => onAssign(e.target.value || null)}
           className="mt-0.5 w-full text-sm border border-ink-300 rounded px-2 py-1 bg-white"
         >
-          <option value="">— Vakant</option>
+          <option value="">— Vacant</option>
           {employees.map((e) => {
             const existingRole = empToRole.get(e.employee_id);
             const takenElsewhere = existingRole && existingRole.id !== node.id;
             return (
               <option key={e.employee_id} value={e.employee_id}>
-                {e.name} ({e.title}){takenElsewhere ? ` — sitter på ${existingRole!.title}` : ''}
+                {e.name} ({e.title}){takenElsewhere ? ` — currently in ${existingRole!.title}` : ''}
               </option>
             );
           })}
         </select>
         {node.assignedEmployeeId === null && (
-          <div className="text-[11px] text-amber-700 mt-1">Att välja en person som redan är tillsatt vakanterar dennes nuvarande roll.</div>
+          <div className="text-[11px] text-amber-700 mt-1">Picking a person who is already assigned vacates their current role.</div>
         )}
       </div>
 
       <label className="flex items-center gap-2 text-xs text-ink-700">
         <input type="checkbox" checked={node.isNewRole} onChange={(e) => onChange({ isNewRole: e.target.checked })} />
-        Markera som ny roll
+        Mark as new role
       </label>
 
       <div className="flex gap-2 pt-1">
-        <button onClick={onAddChild} className="text-xs rounded border border-ink-300 px-2 py-1 hover:border-ink-900">+ Underroll</button>
-        <button onClick={onDelete} className="text-xs rounded border border-red-200 text-red-700 px-2 py-1 hover:bg-red-50">Ta bort</button>
+        <button onClick={onAddChild} className="text-xs rounded border border-ink-300 px-2 py-1 hover:border-ink-900">+ Sub-role</button>
+        <button onClick={onDelete} className="text-xs rounded border border-red-200 text-red-700 px-2 py-1 hover:bg-red-50">Delete</button>
       </div>
     </div>
   );
@@ -368,12 +368,12 @@ function TableEditor({
       <table className="w-full text-sm">
         <thead className="sticky top-0 bg-white border-b border-ink-300">
           <tr className="text-left text-[11px] uppercase tracking-wider text-ink-500">
-            <th className="px-3 py-2">Titel</th>
-            <th className="px-3 py-2">Avdelning</th>
-            <th className="px-3 py-2">Nivå</th>
-            <th className="px-3 py-2">Rapporterar till</th>
-            <th className="px-3 py-2">Tillsatt av</th>
-            <th className="px-3 py-2">Ny?</th>
+            <th className="px-3 py-2">Title</th>
+            <th className="px-3 py-2">Department</th>
+            <th className="px-3 py-2">Level</th>
+            <th className="px-3 py-2">Reports to</th>
+            <th className="px-3 py-2">Filled by</th>
+            <th className="px-3 py-2">New?</th>
             <th className="px-3 py-2"></th>
           </tr>
         </thead>
@@ -415,7 +415,7 @@ function TableEditor({
                   />
                 </td>
                 <td className="px-3 py-2 text-ink-500 truncate max-w-[180px]">{parent ? parent.title : '—'}</td>
-                <td className={`px-3 py-2 ${assigned ? 'text-ink-900' : 'text-amber-700 italic'}`}>{assigned?.name ?? 'Vakant'}</td>
+                <td className={`px-3 py-2 ${assigned ? 'text-ink-900' : 'text-amber-700 italic'}`}>{assigned?.name ?? 'Vacant'}</td>
                 <td className="px-3 py-2">
                   <input type="checkbox" checked={n.isNewRole} onChange={(e) => updateNode(n.id, { isNewRole: e.target.checked })} onClick={(e) => e.stopPropagation()} />
                 </td>
@@ -427,7 +427,7 @@ function TableEditor({
                     }}
                     className="text-xs text-red-600 hover:text-red-700"
                   >
-                    Ta bort
+                    Delete
                   </button>
                 </td>
               </tr>
