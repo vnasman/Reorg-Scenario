@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import type { Employee } from '../types';
 import { generateSampleEmployees } from '../data/sampleData';
+import type { RawSheet } from './mapping';
 
 export const EXPECTED_COLUMNS = [
   'employee_id',
@@ -48,6 +49,24 @@ export function downloadEmptyTemplate(): void {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Personalfil');
   XLSX.writeFile(wb, 'personalfil-tom-mall.xlsx');
+}
+
+// Reads the first sheet without interpreting columns — used by the mapping
+// step so any HRIS export can be mapped onto the Employee shape.
+export async function readRawSheet(file: File): Promise<RawSheet> {
+  // CSV: läs som text så UTF-8 (å/ä/ö) tolkas rätt — SheetJS antar annars Latin-1
+  const isCsv = /\.csv$/i.test(file.name) || file.type === 'text/csv';
+  const wb = isCsv
+    ? XLSX.read(await file.text(), { type: 'string', cellDates: true })
+    : XLSX.read(await file.arrayBuffer(), { type: 'array', cellDates: true });
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, {
+    defval: null,
+    raw: true,
+  });
+  const headerRow = XLSX.utils.sheet_to_json<unknown[]>(ws, { header: 1, range: 0 })[0] ?? [];
+  const headers = (headerRow as unknown[]).map((h) => String(h ?? '').trim()).filter(Boolean);
+  return { fileName: file.name, headers, rows };
 }
 
 export async function parseExcelFile(file: File): Promise<Employee[]> {
