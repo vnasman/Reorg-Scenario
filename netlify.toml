@@ -5,3 +5,17 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# Security headers. The CSP is the enforcement behind the privacy promise:
+# connect-src 'none' means the browser blocks ALL outgoing requests from the
+# app (fetch/XHR/WebSocket/beacon) — uploaded data cannot be exfiltrated even
+# if a dependency turned malicious. Everything else is same-origin only.
+# style-src needs 'unsafe-inline' for React inline styles (React Flow layout).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

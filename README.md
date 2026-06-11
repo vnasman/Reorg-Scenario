@@ -4,6 +4,18 @@ A tool for quickly iterating organization design variants and seeing the impact 
 
 Everything runs client-side. No server, no database, no data leaves the browser.
 
+## Privacy & data handling
+
+HR files are sensitive, so the privacy model is designed to be verifiable rather than taken on trust:
+
+- **No server.** The app is static HTML/CSS/JS. The uploaded file is read with the browser's `File` API and parsed in-page by SheetJS. There is no backend, no API and no database — there is nowhere to upload the data *to*.
+- **Memory only.** Employee data lives in React state. Closing or refreshing the tab erases it. Nothing is written to disk, cookies or browser storage — with one deliberate exception: saved **mapping profiles** (localStorage) contain *column names only*, never row data.
+- **No external requests.** Fonts are bundled at build time (`@fontsource/inter`); the source contains no `fetch`, XHR, WebSocket or analytics. You can verify this in DevTools → Network: after page load, zero requests.
+- **Enforced by CSP.** The production deploy (see `netlify.toml`) sends a `Content-Security-Policy` with `connect-src 'none'`, which makes the browser block every outgoing request from the page. Even a compromised dependency could not exfiltrate data. Scripts and styles are same-origin only; the app cannot be framed (`frame-ancestors 'none'`).
+- **Maximum assurance: run it locally.** Clone the repo and run `npm run dev`, or use the `.command` launcher — then the trust boundary is your own machine. The hosted URL is convenient for demos with the built-in sample data.
+
+Practical guidance for trying it out: use **Load sample data** (54 fictional Lord of the Rings characters) or the downloadable sample file for demos, and keep real personnel files to locally-run or organization-approved deployments.
+
 ## Quick start
 
 ```bash

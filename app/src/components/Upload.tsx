@@ -58,6 +58,21 @@ export function Upload() {
           Upload an employee file from your HRIS to build the as-is chart, design to-be variants and see the impact on employees.
         </p>
 
+        <div className="mt-6 rounded-lg border border-ink-300 bg-white px-4 py-3 text-sm leading-relaxed">
+          <div className="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-ink-900 shrink-0" aria-hidden="true">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+            </svg>
+            <span className="font-medium text-ink-900">Your data never leaves your browser</span>
+          </div>
+          <p className="mt-1.5 text-ink-500 text-[13px]">
+            There is no server — the file is read and analyzed entirely on your machine, held in memory only, and gone when you
+            close or refresh the tab. Nothing is uploaded, logged or tracked. Saved mapping profiles store column names only,
+            never employee data. A Content-Security-Policy blocks the app from making any external requests.
+          </p>
+        </div>
+
         {pending ? (
           <MappingPanel
             sheet={pending}
